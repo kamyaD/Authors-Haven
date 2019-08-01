@@ -127,7 +127,7 @@ class ArticleManager {
         body: req.body.body || req.article.body,
         tagList: (req.body.tagList ? req.body.tagList.split(',') : []),
         image: req.body.image || req.article.image,
-        draft: true
+        draft: false
       });
       if (updateArticle) {
         return res.status(200).json({
