@@ -15,8 +15,6 @@ class SignupValidation {
     */
   static async signupvalidator(req, res, next) {
     const signupSchema = Joi.object().keys({
-      firstName: Joi.string().regex(/^\S+/).min(4).required(),
-      lastName: Joi.string().regex(/^\S+/).min(4).required(),
       username: Joi.string().regex(/^\S+$/).min(4).required()
         .options({ language: { string: { regex: { base: 'please remove spaces between word!' } } } })
         .label('Username'),
@@ -26,8 +24,9 @@ class SignupValidation {
         .label('Password'),
     });
     const user = {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
+      /**
+       * signup body
+       */
       username: req.body.username,
       email: req.body.email,
       password: req.body.password

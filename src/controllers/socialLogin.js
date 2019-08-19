@@ -28,14 +28,9 @@ class UserInfo {
       hash: process.env.DEFAULT_PASSWORD
     });
     if (newUser) {
-      const { dataValues: { id, username, email } } = newUser;
-      const token = await processToken.signToken(newUser.dataValues);
-      return res.status(200).json({
-        message: `Welcome to Authors Haven ${displayName} `,
-        data: {
-          token, id, username, email
-        },
-      });
+      const { dataValues } = newUser;
+      const generatedToken = await processToken.signToken(dataValues);
+      return res.redirect(`${process.env.FRONT_END_URL}/social-login?token=${generatedToken}`);
     }
   }
 
@@ -57,14 +52,8 @@ class UserInfo {
       hash: process.env.DEFAULT_PASSWORD
     });
     if (newUser) {
-      const { dataValues: { id, username, email } } = newUser;
       const token = await processToken.signToken(newUser.dataValues);
-      return res.status(200).json({
-        message: `Welcome to Authors Haven ${displayName} `,
-        data: {
-          token, id, username, email
-        },
-      });
+      return res.redirect(`${process.env.FRONT_END_URL}/social-login?token=${token}`);
     }
   }
 
@@ -75,8 +64,6 @@ class UserInfo {
    * @return {Object} user logged in
    */
   static async twitterLogin(req, res) {
-    const { displayName } = req.user;
-    // eslint-disable-next-line no-unused-expressions
     const newUser = await Users.create({
       username: req.user.username,
       email: `${req.user.username}@gmail.com`,
@@ -87,14 +74,12 @@ class UserInfo {
       hash: process.env.DEFAULT_PASSWORD
     });
     if (newUser) {
-      const { dataValues: { id, username } } = newUser;
-      const token = await processToken.signToken(newUser.dataValues);
-      return res.status(200).json({
-        message: `Welcome to Authors Haven ${displayName} `,
-        data: {
-          token, id, username
-        },
-      });
+      const { dataValues: payload } = newUser;
+      /**
+       * Twitter redirect
+       */
+      const token = await processToken.signToken(payload);
+      return res.redirect(`${process.env.FRONT_END_URL}/social-login?token=${token}`);
     }
   }
 }

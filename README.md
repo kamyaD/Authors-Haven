@@ -17,7 +17,7 @@ However, for the purpose of testing and configurations, one endpoint has been cr
 > npm install
 ```
 
-> create database to postgresql
+> create dataabase to postgresql
 ```
 > createdb authorsHavenDb
 ```
