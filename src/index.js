@@ -6,6 +6,7 @@ import swaggerUI from 'swagger-ui-express';
 import cron from 'node-cron';
 import passport from 'passport';
 import session from 'express-session';
+import cors from 'cors';
 import swaggerJSDoc from '../swagger.json';
 import routes from './routes/api/index';
 import config from './db/config/envirnoment';
@@ -15,6 +16,7 @@ import './helpers/eventListener';
 
 const app = express(); // setup express application
 
+app.use(cors());
 app.use(logger('dev')); // log requests to the console
 
 // Parse incoming requests data

@@ -163,7 +163,7 @@ class UserManager {
         error: resetEmail,
       });
     }
-    return res.status(404).json({ error: `email: ${req.body.email} not found, please check your email and try again`, });
+    return res.status(404).json({ error: 'We couldn not find your account with that information,Please check and try again', });
   }
 
   /**
