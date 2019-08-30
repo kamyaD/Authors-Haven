@@ -147,6 +147,21 @@ class LikeDislike {
     const newArticleDislike = await LikeDislike.createNewLikeOrDislike(req.user.id, req.params.slug, 'dislike');
     return res.status(200).json(newArticleDislike);
   }
+
+
+  /**
+ *
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} likes
+ */
+  static async getLikeDislike(req, res) {
+    const reactions = await likeDislikes.findAll({ where: { slug: req.params.slug } });
+    if (reactions.length === 0) {
+      res.status(404).json({ error: 'Sorry there are no reactions for this article' });
+    }
+    res.status(200).json({ message: 'Reactions have been fetched successfully', reactions });
+  }
 }
 
 export default LikeDislike;

@@ -28,7 +28,7 @@ router.get('/user/highlight/:slug', auth.checkAuthentication, articleController.
 // routes for like/dislike
 router.post('/like/:slug', auth.checkAuthentication, isUserAllowed.checkLikeDislikePermissions, articleValidation.checkSlug, likeDislikeController.likeArticle);
 router.post('/dislike/:slug', auth.checkAuthentication, isUserAllowed.checkLikeDislikePermissions, articleValidation.checkSlug, likeDislikeController.dislikeArticle);
-
+router.get('/likedislike/:slug', likeDislikeController.getLikeDislike);
 // route for ratings
 router.post('/:slug/ratings', auth.checkAuthentication, isUserAllowed.checkRatingsPermissions, articleValidation.rating, articleRatingControllers.rateArticle);
 

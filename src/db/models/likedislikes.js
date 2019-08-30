@@ -3,7 +3,9 @@ import eventEmitter from '../../helpers/eventEmitter';
 export default (sequelize, DataTypes) => {
   const likeDislikes = sequelize.define('likeDislikes', {
     userId: DataTypes.INTEGER,
-    slug: DataTypes.STRING,
+    slug: {
+      type: DataTypes.STRING
+    },
     like: DataTypes.BOOLEAN,
     dislike: DataTypes.BOOLEAN
   }, {

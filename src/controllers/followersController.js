@@ -1,5 +1,7 @@
+import { Op } from 'sequelize';
 import model from '../db/models/index';
 import following from '../helpers/following';
+
 
 const { Users, Followers } = model;
 
@@ -76,12 +78,19 @@ class FollowerManager {
         attributes: ['id', 'username', 'email', 'bio', 'image', 'favorites', 'following']
       }]
     });
-    const num = followees.length;
+
+    const a = [];
+    for (let i = 0; i < followees.length; i += 1) {
+      a.push(followees[i].dataValues.followee);
+    }
+
+    const userFollowees = await Users.findAll({ where: { id: { [Op.in]: a } } });
+    const num = a.length;
     if (num !== 0) {
       return res.status(200).json({
         message: 'The users you follow have been fetched successfully',
-        noFollowees: followees.length,
-        followees
+        noFollowees: userFollowees.length,
+        followees: userFollowees
       });
     }
     return res.status(404).json({ message: 'You are not following anyone yet' });
@@ -107,10 +116,17 @@ class FollowerManager {
         message: 'You have zero(0) followers'
       });
     }
+    const a = [];
+    for (let i = 0; i < arr.length; i += 1) a.push(arr[i].dataValues.follower);
+
+    const userFollowers = await Users.findAll({
+      where: { id: { [Op.in]: a } }
+    });
+
     return res.status(200).json({
       message: 'Your followers have been fetched successfully',
-      noFollowers: arr.length,
-      followers: arr
+      noFollowers: userFollowers.length,
+      followers: userFollowers
     });
   }
 }
