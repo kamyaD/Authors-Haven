@@ -2,10 +2,11 @@ import dotenv from 'dotenv';
 import moment from 'moment';
 import model from '../db/models/index';
 
-
 dotenv.config();
 
-const { Comments, Articles, CommentEditHistory } = model;
+const {
+  Comments, Articles, CommentEditHistory, Users
+} = model;
 
 /**
  * comment controller
@@ -29,7 +30,9 @@ class CommentManager {
         return res.status(404).send({ error: 'The Article requested is not found!' });
       }
       await Comments.create(comment);
-      return res.status(201).json({ message: 'Thank you for commenting on our article', data: comment });
+      return res
+        .status(201)
+        .json({ message: 'Thank you for commenting on our article', data: comment });
     } catch (error) {
       return res.status(409).json({ message: 'Internal Server Error' });
     }
@@ -51,23 +54,29 @@ class CommentManager {
       if (!findComment) {
         return res.status(404).send({ error: 'The comment requested is not found!' });
       }
-      return res.status(200).json({ message: 'The comment was deleted successfully', });
+      return res.status(200).json({ message: 'The comment was deleted successfully' });
     } catch (error) {
-      return res.status(500).json({ error: 'server error, please try again later', });
+      return res.status(500).json({ error: 'server error, please try again later' });
     }
   }
 
   /**
- *
- * @param {object} req
- * @param {object} res
- * @returns {message} That article is not available
- */
+   *
+   * @param {object} req
+   * @param {object} res
+   * @returns {message} That article is not available
+   */
   static async getComments(req, res) {
     const findComments = await Comments.findAll({
       where: { slug: req.params.slug },
-      attributes: ['body', 'user', 'slug'],
-      raw: true,
+      order: [['createdAt', 'DESC']],
+      include: [
+        {
+          as: 'User',
+          model: Users,
+          attributes: ['id', 'username', 'image']
+        }
+      ]
     });
     if (!findComments.length) {
       return res.status(400).send({ message: 'There is no comments on this article' });
@@ -76,13 +85,12 @@ class CommentManager {
     return res.status(200).send({ comments });
   }
 
-
   /**
- *
- * @param {object} req
- * @param {object} res
- * @returns {object} updated article
- */
+   *
+   * @param {object} req
+   * @param {object} res
+   * @returns {object} updated article
+   */
   static async editComment(req, res) {
     try {
       const newComment = {
@@ -106,17 +114,17 @@ class CommentManager {
   }
 
   /**
- *
- * @param {object} req
- * @param {object} res
- * @returns {object} updated article
- */
+   *
+   * @param {object} req
+   * @param {object} res
+   * @returns {object} updated article
+   */
   static async getEditComment(req, res) {
     try {
       let findComment = await CommentEditHistory.findAll({
         where: { bodyId: req.params.id },
         attributes: ['createdAt', 'newBody'],
-        raw: true,
+        raw: true
       });
       if (!findComment.length) {
         return res.status(404).send({ error: 'The comment requested has no been edited' });
