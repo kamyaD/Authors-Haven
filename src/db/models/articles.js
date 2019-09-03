@@ -28,7 +28,7 @@ export default (sequelize, DataTypes) => {
       defaultValue: 0
     },
     image: {
-        type: DataTypes.BLOB,
+        type: DataTypes.STRING,
         allowNull: {
             args: true,
         }

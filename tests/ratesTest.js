@@ -33,7 +33,7 @@ describe('Fetch Rating Routes', () => {
   });
   it('it should fetch a rating of an article', (done) => {
     chai.request(index)
-      .get('/api/articles/ratings/1')
+      .get('/api/articles/ratings/TIA')
       .end((err, res) => {
         res.status.should.equal(200);
         res.body.should.be.a('object');

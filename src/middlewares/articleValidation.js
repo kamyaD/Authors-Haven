@@ -27,11 +27,11 @@ class ArticleRatingValidation {
       abortEarly: false
     });
     if (checkRating.error) {
-      const Errors = [];
+      const error = [];
       for (let i = 0; i < checkRating.error.details.length; i += 1) {
-        Errors.push(checkRating.error.details[i].message.replace('"', ' ').replace('"', ' '));
+        error.push(checkRating.error.details[i].message.replace('"', ' ').replace('"', ' '));
       }
-      return res.status(400).json({ Errors });
+      return res.status(400).json({ error });
     }
     req.rate = checkRating.value;
     next();

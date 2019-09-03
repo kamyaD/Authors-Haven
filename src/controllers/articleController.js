@@ -106,7 +106,7 @@ class ArticleManager {
         model: Users,
         attributes: ['username', 'bio', 'image']
       }],
-      attributes: ['slug', 'title', 'description', 'readtime', 'body', 'tagList', 'favorited', 'favoritesCount', 'updatedAt', 'createdAt']
+      attributes: ['slug', 'title', 'description', 'readtime', 'body', 'tagList', 'favorited', 'favoritesCount', 'image', 'updatedAt', 'createdAt']
     });
     if (findArticle) return res.status(200).json({ article: findArticle });
     return res.status(404).json({ error: 'article not found' });
@@ -161,7 +161,7 @@ class ArticleManager {
           model: Users,
           attributes: ['username', 'bio', 'image']
         }],
-        attributes: ['id', 'slug', 'title', 'description', 'readtime', 'body', 'tagList', 'updatedAt', 'createdAt']
+        attributes: ['id', 'slug', 'title', 'description', 'readtime', 'body', 'tagList', 'image', 'updatedAt', 'createdAt']
       });
       if (!articlesList.length) {
         return res.status(404).json({

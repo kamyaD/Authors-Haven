@@ -15,6 +15,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+     slug:{
+      type: DataTypes.STRING,
+      allowNull: {
+          args: true
+      }
+     },
     articleId: {
       type: DataTypes.INTEGER,
       allowNull: false
