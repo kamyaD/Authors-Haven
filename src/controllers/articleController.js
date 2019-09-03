@@ -310,5 +310,38 @@ class ArticleManager {
       error: 'no highlighted text found'
     });
   }
+
+  /**
+   *
+   * @param {Object} req
+   * @param {Object} res
+   * @returns {Object} articles
+   */
+  static async getAuthorArticles(req, res) {
+    const { id } = req.user;
+    try {
+      const articlesList = await Articles.findAll({
+        where: { authorId: id },
+        include: [{
+          as: 'author',
+          model: Users,
+          attributes: ['username', 'bio', 'image']
+        }],
+        attributes: ['id', 'slug', 'title', 'description', 'readtime', 'body', 'tagList', 'updatedAt', 'createdAt']
+      });
+      if (!articlesList.length) {
+        return res.status(404).json({
+          error: 'The articles requested can not be found'
+        });
+      }
+      return res.status(200).json({
+        articles: articlesList
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: 'internal server error'
+      });
+    }
+  }
 }
 export default ArticleManager;

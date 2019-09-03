@@ -18,6 +18,7 @@ router.post('/stats/:slug/save-reading', auth.checkAuthentication, isUserAllowed
 
 // routes that don't need authentication
 router.get('/', articleController.listAllArticles);
+router.get('/user', auth.checkAuthentication, articleController.getAuthorArticles);
 router.get('/:articleSlug', articleController.readArticle);
 router.get('/ratings/:articleId', articleRatingControllers.ratingAverage);
 router.post('/search', searchController.search);
