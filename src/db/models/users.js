@@ -2,139 +2,150 @@ import bcrypt from 'bcrypt';
 import eventEmitter from '../../helpers/eventEmitter';
 
 export default (sequelize, DataTypes) => {
-  const Users = sequelize.define('Users', {
-    firstName: {
+  const Users = sequelize.define(
+    'Users',
+    {
+      firstName: {
         type: DataTypes.STRING,
         allowNull: {
-            args: true
+          args: true
         }
-    },
-    lastName: {
+      },
+      lastName: {
         type: DataTypes.STRING,
         allowNull: {
-            args: true
+          args: true
         }
-    },
-    username: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: {
-        args: false,
-        message: 'Please enter your username'
-      }
-    },
-    email: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: {
-        args: false,
-        message: 'Please enter your email'
-      }
-    },
-    bio: DataTypes.STRING,
-    image: DataTypes.STRING,
-    favorites: [{
-      type: DataTypes.STRING,
-      allowNull: {
-        args: true
-      }
-    }],
-    following: [{
-      type: DataTypes.INTEGER,
-      allowNull: {
-        args: true
-      }
-    }],
-    isVerified: {
+      },
+      username: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: {
+          args: false,
+          message: 'Please enter your username'
+        }
+      },
+      email: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: {
+          args: false,
+          message: 'Please enter your email'
+        }
+      },
+      bio: DataTypes.STRING,
+      image: DataTypes.STRING,
+      favorites: [
+        {
+          type: DataTypes.STRING,
+          allowNull: {
+            args: true
+          }
+        }
+      ],
+      following: [
+        {
+          type: DataTypes.INTEGER,
+          allowNull: {
+            args: true
+          }
+        }
+      ],
+      isVerified: {
         type: DataTypes.BOOLEAN
-    },
-    socialId: {
+      },
+      socialId: {
         allowNull: {
-            args: true
+          args: true
         },
         type: DataTypes.STRING
-    },
-    provider: {
+      },
+      provider: {
         allowNull: {
-            args: true
+          args: true
         },
         type: DataTypes.STRING
-    },
-    role: {
+      },
+      role: {
         type: DataTypes.STRING,
         allowNull: {
-            args: true
+          args: true
         }
-    },
-    hash: {
+      },
+      hash: {
         allowNull: {
-            args: true
+          args: true
         },
         type: DataTypes.STRING
+      },
+      role: {
+        allowNull: {
+          args: true
+        },
+        type: DataTypes.STRING
+      }
     },
-    role: {
-      allowNull: {
-        args: true
-    },
-    type: DataTypes.STRING
-    }
-  }, {
+    {
       hooks: {
         beforeCreate: async (user) => {
           user.hash = await bcrypt.hashSync(user.hash, 8);
-      },
-      afterCreate: async (user) => {
-        const userData = user.dataValues;
-        const userConfig = {
-          inApp: {
-            articles: {
-              show: true,
-              on: ['publish', 'comment', 'like']
+        },
+        afterCreate: async (user) => {
+          const userData = user.dataValues;
+          const userConfig = {
+            inApp: {
+              articles: {
+                show: true,
+                on: ['publish', 'comment', 'like']
+              }
+            },
+            email: {
+              articles: {
+                show: true,
+                on: ['publish']
+              }
             }
-          },
-          email: {
-            articles: {
-              show: true,
-              on: ['publish']
-            }
-          }
-        }
-        const settings = {
-          userId: userData.id,
-          config: JSON.stringify(userConfig)
-        }
-        eventEmitter.emit('create default notification configuration', settings);
-
+          };
+          const settings = {
+            userId: userData.id,
+            config: JSON.stringify(userConfig)
+          };
+          eventEmitter.emit('create default notification configuration', settings);
         }
       },
       instanceMethods: {
-        validatePassword: async function (hash) {
+        async validatePassword(hash) {
           return await bcrypt.compareSync(hash, this.password);
         }
       }
+    }
+  );
+  Users.associate = function (models) {
+    // associations can be defined here
+    Users.hasMany(models.Articles, {
+      as: 'author',
+      foreignKey: 'authorId'
     });
-      Users.associate = function(models) {
-      // associations can be defined here
-      Users.hasMany(models.Articles, {
-        as: 'author',
-        foreignKey: "authorId"
-      });
-      Users.hasMany(models.Followers, {
-        foreignKey: "follower",
-        onDelete: 'CASCADE'
-      });
-      Users.hasMany(models.Followers, {
-        foreignKey: "followee",
-        onDelete: 'CASCADE'
-      });
-      Users.hasMany(models.Notifications, {
-        foreignKey: "userId",
-        onDelete: 'CASCADE'
-      });
-      Users.hasMany(models.NotificationConfigs, {
-        foreignKey: "userId",
-        onDelete: 'CASCADE'
-      });
-    };
+    Users.hasMany(models.Followers, {
+      foreignKey: 'follower',
+      onDelete: 'CASCADE'
+    });
+    Users.hasMany(models.Followers, {
+      foreignKey: 'followee',
+      onDelete: 'CASCADE'
+    });
+    Users.hasMany(models.Notifications, {
+      foreignKey: 'userId',
+      onDelete: 'CASCADE'
+    });
+    Users.hasMany(models.NotificationConfigs, {
+      foreignKey: 'userId',
+      onDelete: 'CASCADE'
+    });
+    Users.hasMany(models.Comments, {
+      foreignKey: 'user',
+      onDelete: 'CASCADE'
+    });
+  };
   return Users;
 };
