@@ -20,7 +20,7 @@ router.post('/stats/:slug/save-reading', auth.checkAuthentication, isUserAllowed
 router.get('/', articleController.listAllArticles);
 router.get('/user', auth.checkAuthentication, articleController.getAuthorArticles);
 router.get('/:articleSlug', articleController.readArticle);
-router.get('/ratings/:articleId', articleRatingControllers.ratingAverage);
+router.get('/ratings/:slug', articleRatingControllers.ratingAverage);
 router.post('/search', searchController.search);
 router.post('/highlight/:slug', auth.checkAuthentication, articleValidation.checkSlug, articleController.highlightAndComment);
 router.get('/user/highlight', auth.checkAuthentication, articleController.getHighlightedText);

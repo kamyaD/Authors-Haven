@@ -36,7 +36,7 @@ class ArticleRatingManager {
       const findIfUserRatedArticle = await Rating.findOne({
         where: {
           user: findUser.id,
-          articleId: findArticle.id
+          slug
         }
       });
       if (findIfUserRatedArticle) {
@@ -48,7 +48,8 @@ class ArticleRatingManager {
       const saveRating = await Rating.create({
         rating,
         user: findUser.id,
-        articleId: findArticle.id
+        articleId: findArticle.id,
+        slug
       });
       const { user, rating: ratingData } = saveRating;
       return res.status(201).json({
@@ -73,7 +74,7 @@ class ArticleRatingManager {
  */
   static async ratingAverage(req, res) {
     const pageNumber = paginate(req.query.page, req.query.pageSize);
-    const averageRating = await Rating.findAll({ where: { articleId: req.params.articleId }, attributes: ['rating'], raw: true, });
+    const averageRating = await Rating.findAll({ where: { slug: req.params.slug }, attributes: ['rating'], raw: true, });
     if (!averageRating.length) {
       return res.status(400).send({ message: 'The Article requested has not been rated yet' });
     }
