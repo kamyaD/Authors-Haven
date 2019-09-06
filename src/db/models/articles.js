@@ -45,6 +45,10 @@ export default (sequelize, DataTypes) => {
             args: true
         }
     },
+    draft: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
     authorId: {
         type: DataTypes.INTEGER,
         allowNull: false
