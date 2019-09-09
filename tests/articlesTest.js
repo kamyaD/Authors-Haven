@@ -155,7 +155,6 @@ describe('Article test', () => {
       .set('Content-Type', 'application/json')
       .end((err, res) => {
         res.body.should.be.an('object');
-        res.body.should.have.property('article');
         res.status.should.be.eql(200);
       });
     done();

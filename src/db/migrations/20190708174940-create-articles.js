@@ -38,6 +38,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 0
       },
+      draft: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
       readtime: {
         type: Sequelize.STRING,
         allowNull: true

@@ -217,7 +217,7 @@ class UserManager {
     const { token } = req.headers;
     const tokenPayload = await processToken.verifyToken(token);
     const { exp } = tokenPayload;
-    await BlacklistTokens.create({ token, expires: exp * 1000 });
+    await BlacklistTokens.create({ token, expires: exp * 100000 });
     return res.status(200).json({
       message: 'User logged out'
     });

@@ -21,11 +21,6 @@ class ArticleManager {
   static async postArticle(req, res) {
     try {
       const { id } = req.user;
-      if (req.file) {
-        const file = dataUri(req).content;
-        const result = await uploader.upload(file);
-        req.body.image = result.url;
-      }
       let generateSlug = `${req.body.title} ${id} ${Math.floor(Math.random() * 10000)}`;
       while (generateSlug.match(/ /g)) generateSlug = generateSlug.replace(' ', '-');
       const newArticle = {
@@ -37,6 +32,7 @@ class ArticleManager {
         tagList: (req.body.tagList ? req.body.tagList.split(',') : []),
         slug: generateSlug.toLowerCase(),
         readtime: readTime.read(req.body.body),
+        draft: req.body.draft || false
       };
       if (!newArticle.tagList) {
         const postNewArticle = await Articles.create(newArticle);
@@ -81,7 +77,7 @@ class ArticleManager {
       });
       if (deleteArticle) {
         return res.status(200).json({
-          message: 'article deleted successfully',
+          message: 'article deleted successfully'
         });
       }
     } catch (error) {
@@ -129,15 +125,18 @@ class ArticleManager {
         title: req.body.title || req.article.title,
         description: req.body.description || req.article.description,
         body: req.body.body || req.article.body,
-        tagList: req.body.tagList || req.article.tagList,
-        image: req.body.image || req.article.image
+        tagList: (req.body.tagList ? req.body.tagList.split(',') : []),
+        image: req.body.image || req.article.image,
+        draft: true
       });
       if (updateArticle) {
         return res.status(200).json({
+          message: 'You have update successfully',
           article: updateArticle
         });
       }
     } catch (err) {
+      console.log(err);
       return res.status(200).json({
         err
       });
@@ -161,7 +160,7 @@ class ArticleManager {
           model: Users,
           attributes: ['username', 'bio', 'image']
         }],
-        attributes: ['id', 'slug', 'title', 'description', 'readtime', 'body', 'tagList', 'image', 'updatedAt', 'createdAt']
+        attributes: ['id', 'slug', 'title', 'description', 'readtime', 'body', 'tagList', 'image', 'draft', 'updatedAt', 'createdAt']
       });
       if (!articlesList.length) {
         return res.status(404).json({
@@ -327,7 +326,7 @@ class ArticleManager {
           model: Users,
           attributes: ['username', 'bio', 'image']
         }],
-        attributes: ['id', 'slug', 'title', 'description', 'readtime', 'body', 'tagList', 'updatedAt', 'createdAt']
+        attributes: ['id', 'slug', 'title', 'description', 'readtime', 'body', 'tagList', 'draft', 'updatedAt', 'createdAt']
       });
       if (!articlesList.length) {
         return res.status(404).json({
