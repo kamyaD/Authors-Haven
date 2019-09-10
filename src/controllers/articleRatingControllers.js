@@ -33,18 +33,6 @@ class ArticleRatingManager {
         });
       }
 
-      const findIfUserRatedArticle = await Rating.findOne({
-        where: {
-          user: findUser.id,
-          slug
-        }
-      });
-      if (findIfUserRatedArticle) {
-        return res.status(400).json({
-          error: 'You have already rated this article'
-        });
-      }
-
       const saveRating = await Rating.create({
         rating,
         user: findUser.id,
