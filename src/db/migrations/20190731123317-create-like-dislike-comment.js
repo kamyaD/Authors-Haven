@@ -12,7 +12,13 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       commentId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Comments',
+          key: 'id'
+        }
       },
       like: {
         type: Sequelize.BOOLEAN

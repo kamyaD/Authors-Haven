@@ -18,6 +18,10 @@ export default (sequelize, DataTypes) => {
     }
   );
   Comments.associate = function (models) {
+    Comments.hasMany(models.LikeDislikeComment, {
+      as: 'comment',
+      foreignKey: 'commentId'
+    });
     Comments.belongsTo(models.Users, {
       foreignKey: 'user',
       onDelete: 'CASCADE'
