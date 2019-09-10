@@ -150,7 +150,7 @@ class ArticleManager {
    * @returns{object} an array of articles
    */
   static async listAllArticles(req, res) {
-    const pageNumber = paginate(req.query.page, req.query.pageSize);
+    const pageNumber = paginate(req.query.page);
     try {
       const articlesList = await Articles.findAll({
         offset: pageNumber.offset,
