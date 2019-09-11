@@ -53,6 +53,16 @@ describe('User notifications', () => {
         done();
       });
   });
+  it('A user should be able to get his or her notification preference', (done) => {
+    chai.request(index)
+      .get('/api/notifications/config')
+      .set('token', userToken2)
+      .end((err, res) => {
+        res.status.should.equal(200);
+        res.body.should.be.an('object');
+        done();
+      });
+  });
   it('A user should be able to update his or her notification preference', (done) => {
     const config = {
       inApp: true,
