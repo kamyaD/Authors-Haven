@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import model from '../db/models/index';
 
 const { LikeDislikeComment, Comments } = model;
@@ -28,9 +29,12 @@ class LikeDislikeComments {
     if (!findComment) {
       return res.status(404).send({ error: 'The comment requested is not found!' });
     }
-    const find = await LikeDislikeComment.findOne({ where: { userId: req.user.id, like: true } });
+    /**
+     * find disliked
+     */
+    const find = await LikeDislikeComment.findOne({ where: { userId: req.user.id, like: true, commentId: like.commentId } });
     if (find) {
-      await LikeDislikeComment.update({ like: false }, { where: { userId: req.user.id } });
+      await LikeDislikeComment.update({ like: false }, { where: { userId: req.user.id, commentId: like.commentId } });
       const Likes = await LikeDislikeComment.findAll({ where: { like: true } });
       return res.status(201).json({
         message: 'You unliked this comment', data: dislikedComment, total: Likes.length
@@ -52,9 +56,9 @@ class LikeDislikeComments {
       like: false,
       dislike: true,
       userId: req.user.id,
-      commentId: req.body.id
+      commentId: req.params.id
     };
-    const find = await LikeDislikeComment.findOne({ where: { userId: req.user.id, like: true } });
+    const find = await LikeDislikeComment.findOne({ where: { userId: req.user.id, like: true, commentId: dislike.commentId } });
     if (find) {
       const { like: liked, dislike: disliked } = find;
       if (liked) await find.update({ like: false });

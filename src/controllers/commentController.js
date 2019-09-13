@@ -5,7 +5,7 @@ import model from '../db/models/index';
 dotenv.config();
 
 const {
-  Comments, Articles, CommentEditHistory, Users
+  Comments, Articles, CommentEditHistory, Users, LikeDislikeComment
 } = model;
 
 /**
@@ -75,6 +75,11 @@ class CommentManager {
           as: 'User',
           model: Users,
           attributes: ['id', 'username', 'image']
+        },
+        {
+          as: 'comment',
+          model: LikeDislikeComment,
+          attributes: ['id', 'commentId', 'like', 'dislike']
         }
       ]
     });
