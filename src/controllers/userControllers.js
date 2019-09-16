@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
+import open from 'open';
 import model from '../db/models/index';
 import mail from '../helpers/mail';
 import validations from '../helpers/validations';
@@ -68,9 +69,7 @@ class UserManager {
           });
         }
         await Users.update({ isVerified: true }, { where: { id: findUser.id } });
-        return res.status(403).json({
-          message: `User with ${findUser.email} has been verified, use this link to login: https://ah-lobos-backend-swagger.herokuapp.com`,
-        });
+        return open('https://ah-lobos-frontend.herokuapp.com/login');
       }
     } catch (error) {
       return res.status(500).json({
