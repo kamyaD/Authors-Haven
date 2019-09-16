@@ -1,6 +1,8 @@
 import model from '../db/models';
 
-const { Users } = model;
+const {
+  Users, Articles, Notifications, Reporting
+} = model;
 /**
  * Admin class functionality
  */
@@ -13,10 +15,18 @@ class AdminManager {
    */
   static async getAll(req, res) {
     try {
+      const usersCount = await Users.count();
+      const articleCount = await Articles.count();
+      const reportCount = await Reporting.count();
+      const notifyCount = await Notifications.count();
       const allUsers = await Users.findAll();
       if (allUsers) {
         return res.status(200).json({
-          users: allUsers
+          users: allUsers,
+          usersCount,
+          articleCount,
+          reportCount,
+          notifyCount
         });
       }
       return res.status(404).json({
