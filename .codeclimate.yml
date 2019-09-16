@@ -1,6 +1,8 @@
 exclude_patterns:
-- "src/db/"
-- "tests/"
+  - "src/db/"
+  - "tests/"
 checks:
   similar-code:
+    enabled: false
+  method-lines:
     enabled: false
