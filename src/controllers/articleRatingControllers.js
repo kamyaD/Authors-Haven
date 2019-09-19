@@ -20,11 +20,6 @@ class ArticleRatingManager {
 
     try {
       const findArticle = await Articles.findOne({ where: { slug } });
-      if (!findArticle) {
-        return res.status(404).send({
-          error: 'Article not found!'
-        });
-      }
       const findUser = await Users.findOne({ where: { email } });
 
       if (findUser.id === findArticle.postedBy) {
@@ -33,6 +28,16 @@ class ArticleRatingManager {
         });
       }
 
+      const hasRated = await Rating.findOne({ where: { user: findUser.id } });
+      if (hasRated) {
+        await hasRated.update({
+          rating,
+          where: { user: findUser.id }
+        });
+        return res.status(200).json({
+          message: `Article ratings changed to ${rating}`
+        });
+      }
       const saveRating = await Rating.create({
         rating,
         user: findUser.id,
