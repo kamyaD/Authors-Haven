@@ -155,6 +155,7 @@ class ArticleManager {
       const articlesList = await Articles.findAll({
         offset: pageNumber.offset,
         limit: pageNumber.limit,
+        order: [['createdAt', 'DESC']],
         include: [{
           as: 'author',
           model: Users,

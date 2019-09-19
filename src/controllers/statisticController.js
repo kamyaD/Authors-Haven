@@ -14,7 +14,7 @@ class StatisticManager {
     const { id } = req.user;
     const { slug } = req.params;
     const findArticle = await Articles.findOne({ where: { slug } });
-    if (!findArticle) return res.status(200).json({ error: 'No article found' });
+    if (!findArticle) return res.status(404).json({ error: 'No article found' });
     const [result, created] = await Statistics.findOrCreate({
       where: { userId: id, articleId: findArticle.id }, defaults: { numberOfReading: 1 }
     });
@@ -41,13 +41,14 @@ class StatisticManager {
     const countTotalArticlesRead = await Statistics.count({ where: { userId: id } });
     const articlesRead = await Statistics.findAll({
       where: { userId: id },
+      order: [['updatedAt', 'DESC']],
       attributes: [
         ['numberOfReading', 'TimesArticleRead'],
         ['updatedAt', 'lastSeen']],
       include: [
         {
           model: Articles,
-          attributes: ['title', 'slug', 'body'],
+          attributes: ['title', 'slug', 'description', 'body'],
         }
       ]
     });
